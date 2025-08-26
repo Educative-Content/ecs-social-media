@@ -1,0 +1,40 @@
+{
+  "family": "posts-svc",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "posts",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/posts:latest",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "POSTS_TABLE",
+          "value": "posts"
+        },
+        {
+          "name": "MEDIA_BUCKET",
+          "value": "your-media-bucket"
+        },
+        {
+          "name": "JWT_SECRET",
+          "value": "SET-IN-SSM"
+        }
+      ],
+      "essential": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "family": "feed-svc",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "feed",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/feed:latest",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "POSTS_TABLE",
+          "value": "posts"
+        },
+        {
+          "name": "JWT_SECRET",
+          "value": "SET-IN-SSM"
+        }
+      ],
+      "essential": true
+    }
+  ]
+}

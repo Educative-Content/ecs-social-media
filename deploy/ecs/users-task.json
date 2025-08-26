@@ -1,0 +1,36 @@
+{
+  "family": "users-svc",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "users",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/users:latest",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "USERS_TABLE",
+          "value": "users"
+        },
+        {
+          "name": "JWT_SECRET",
+          "value": "SET-IN-SSM"
+        }
+      ],
+      "essential": true
+    }
+  ]
+}

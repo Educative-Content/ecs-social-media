@@ -1,0 +1,52 @@
+services:
+  users:
+    build:
+      context: ..                # was ../services/users
+      dockerfile: services/users/Dockerfile
+    ports: ["8001:8000"]
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - USERS_TABLE=${USERS_TABLE:-users}
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-AKIAUSLGPNUWIWA4HMWS}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-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}
+    depends_on: []
+  posts:
+    build:
+      context: ..
+      dockerfile: services/posts/Dockerfile
+    ports: ["8002:8000"]
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - POSTS_TABLE=${POSTS_TABLE:-posts}
+      - MEDIA_BUCKET=${MEDIA_BUCKET:-social-media-store-xyz}
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-AKIAUSLGPNUWIWA4HMWS}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-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}
+    depends_on: []
+  feed:
+    build: 
+      context: ..
+      dockerfile: services/feed/Dockerfile
+    ports: ["8003:8000"]
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - POSTS_TABLE=${POSTS_TABLE:-posts}
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-AKIAUSLGPNUWIWA4HMWS}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-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}
+    depends_on: []
+  frontend:
+    working_dir: /app
+    image: node:20-alpine
+    ports: ["5173:5173"]
+    environment:
+      - VITE_USERS_URL=http://localhost:8001
+      - VITE_POSTS_URL=http://localhost:8002
+      - VITE_FEED_URL=http://localhost:8003
+    volumes:
+      - ../frontend:/app
+    command: sh -c "npm i && npm run dev -- --host 0.0.0.0"
